@@ -1,5 +1,7 @@
 package hu.nye;
 
+import java.util.Scanner;
+
 public final class Game {
     /**
      * The number of rows in the game board.
@@ -19,12 +21,16 @@ public final class Game {
     /**
      * The character representing the next player to move.
      */
-    private GameCharacters nextPlayer;
+    private GameCharacters currentPlayer;
 
     /**
      * The current state of the game.
      */
     private GameState state;
+
+    private static final int ROBOT_SLEEP_TIME = 500;
+
+    private static final int WINNING_CONDITION = 4;
 
     /**
      * Constructs a new Game instance with the specified parameters.
@@ -41,7 +47,8 @@ public final class Game {
         this.rows = arows;
         this.columns = acolumns;
         this.board = aboard;
-        this.nextPlayer = anextPlayer;
+        this.currentPlayer = anextPlayer;
+        this.state = GameState.SETUP;
     }
 
     /**
@@ -55,42 +62,24 @@ public final class Game {
     public Game(final int arows, final int acolumns) {
         this.rows = arows;
         this.columns = acolumns;
-        this.nextPlayer = GameCharacters.PLAYER1;
+        this.currentPlayer = GameCharacters.PLAYER1;
         this.board = new Board(arows, acolumns);
         this.state = GameState.SETUP;
-
-        for (int i = 0; i < this.rows; i++) {
-            for (int j = 0; j < this.columns; j++) {
-                this.board.setCharacterAt(i, j, GameCharacters.EMPTY);
-            }
-        }
     }
 
-    /**
-     * Pushes a character to the specified column on the game board.
-     * Checks if the move results in a win, draw, or continues the game.
-     *
-     * @param acolumn    the column to push the character to (1-based index)
-     * @param acharacter the character to push to the board
-     */
-    public void pushToBoard(final int acolumn,
-                            final GameCharacters acharacter) {
-        int column = acolumn;
-        // 0-based index
-        column--;
-        for (int i = rows - 1; i >= 0; i--) {
-            if (this.board.getCharacterAt(i, column) == GameCharacters.EMPTY) {
-                this.board.setCharacterAt(i, column, acharacter);
-                break;
-            }
+    public void userInput() {
+        System.out.println("Enter the column number: ");
+        Scanner scanner = new Scanner(System.in);
+        int column = scanner.nextInt();
+        if (column < 0 || column >= columns) {
+            System.out.println("Invalid column number."
+                    + " Please enter a number between 0 and " + (columns - 1));
+            return;
         }
-        checkIfWinner(acharacter);
-        if (state == GameState.PLAYER1_WON) {
-            System.out.println("Player 1 won!");
-        } else if (state == GameState.PLAYER2_WON) {
-            System.out.println("Player 2 won!");
-        } else if (state == GameState.DRAW) {
-            System.out.println("It's a draw!");
+        if (board.pushToBoard(column, currentPlayer)) {
+            switchPlayer();
+        } else {
+            System.out.println("Column is full. Please choose another column.");
         }
     }
 
@@ -103,16 +92,119 @@ public final class Game {
      * @param character the character to check for a winning condition
      */
     public void checkIfWinner(final GameCharacters character) {
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                if (board.getCharacterAt(i, j) == character) {
+                    if (checkHorizontal(i, j, character)
+                            || checkVertical(i, j, character)
+                            || checkDiagonal(i, j, character)) {
+                        if (character == GameCharacters.PLAYER1) {
+                            setState(GameState.PLAYER1_WON);
+                        } else {
+                            setState(GameState.PLAYER2_WON);
+                        }
+                        return;
+                    }
+                }
+            }
+        }
     }
 
-    /**
-     * Starts the game by setting the state to PLAYING and printing the game
-     * dimensions.
-     */
-    public void start() {
-        System.out.println("Game started with width: " + rows
-                + " and height: " + columns);
+    public boolean checkHorizontal(final int row, final int column, final GameCharacters character) {
+        int count = 0;
+        for (int i = 0; i < WINNING_CONDITION; i++) {
+            if (column + i < columns && board.getCharacterAt(row, column + i) == character) {
+                count++;
+            }
+        }
+        return count == WINNING_CONDITION;
+    }
+
+    public boolean checkVertical(final int row, final int column, final GameCharacters character) {
+        int count = 0;
+        for (int i = 0; i < WINNING_CONDITION; i++) {
+            if (row + i < rows && board.getCharacterAt(row + i, column) == character) {
+                count++;
+            }
+        }
+        return count == WINNING_CONDITION;
+    }
+
+    public boolean checkDiagonal(final int row, final int column, final GameCharacters character) {
+        int count = 0;
+        for (int i = 0; i < WINNING_CONDITION; i++) {
+            if (row + i < rows && column + i < columns
+                    && board.getCharacterAt(row + i, column + i) == character) {
+                count++;
+            }
+        }
+        if (count == WINNING_CONDITION) {
+            return true;
+        }
+        count = 0;
+        for (int i = 0; i < WINNING_CONDITION; i++) {
+            if (row + i < rows && column - i >= 0
+                    && board.getCharacterAt(row + i, column - i) == character) {
+                count++;
+            }
+        }
+        return count == WINNING_CONDITION;
+    }
+
+    public void startNew() {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Please enter the player name: ");
+        String playerName = sc.nextLine();
+        System.out.println(playerName + " vs. Robot");
+        System.out.println(playerName + " starts the game");
         setState(GameState.PLAYING);
+    }
+
+    public void getGameInput() {
+        if (getCurrentPlayer() == GameCharacters.PLAYER1) {
+            boolean validInput = false;
+            Scanner sc = new Scanner(System.in);
+            System.out.print("Please enter the column number: ");
+            int selectedColumn;
+            do {
+                selectedColumn = sc.nextInt();
+                if (selectedColumn < 1 || selectedColumn >= columns + 1) {
+                    System.out.print("Invalid column number."
+                            + " Please enter a number between 1 and "
+                            + (columns) + ": ");
+                } else {
+                    if (getBoard().pushToBoard(selectedColumn, GameCharacters.PLAYER1)) {
+                        validInput = true;
+                    } else {
+                        System.out.println("Column is full."
+                                + " Please choose another column.");
+                    }
+                }
+            } while (!validInput);
+
+            switchPlayer();
+        } else {
+            System.out.println("The robot is thinking...");
+            try {
+                Thread.sleep(ROBOT_SLEEP_TIME);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                System.out.println("Thread was interrupted,"
+                        + " failed to complete operation");
+            }
+            int botColumn = botMove();
+            System.out.println("Robot moved to column " + botColumn);
+            switchPlayer();
+        }
+    }
+
+    public int botMove() {
+        int column = (int) (Math.random() * App.COLUMNS) + 1;
+        while (this.board.isColumnFull(column)) {
+            column = (int) (Math.random() * App.COLUMNS) + 1;
+        }
+        this.board.pushToBoard(column, GameCharacters.PLAYER2);
+        return column;
     }
 
     /**
@@ -156,8 +248,8 @@ public final class Game {
      *
      * @return the next player character
      */
-    public GameCharacters getNextPlayer() {
-        return nextPlayer;
+    public GameCharacters getCurrentPlayer() {
+        return currentPlayer;
     }
 
     /**
@@ -165,8 +257,27 @@ public final class Game {
      *
      * @param anextPlayer the new next player character
      */
-    public void setNextPlayer(final GameCharacters anextPlayer) {
-        this.nextPlayer = anextPlayer;
+    public void setCurrentPlayer(final GameCharacters anextPlayer) {
+        this.currentPlayer = anextPlayer;
+    }
+
+    public GameCharacters getNextPlayer() {
+        if (currentPlayer == GameCharacters.PLAYER1) {
+            return GameCharacters.PLAYER2;
+        } else {
+            return GameCharacters.PLAYER1;
+        }
+    }
+
+    /**
+     * Switches the current player to the other player.
+     */
+    public void switchPlayer() {
+        if (currentPlayer == GameCharacters.PLAYER1) {
+            currentPlayer = GameCharacters.PLAYER2;
+        } else {
+            currentPlayer = GameCharacters.PLAYER1;
+        }
     }
 
     /**
@@ -194,13 +305,6 @@ public final class Game {
      */
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                sb.append(this.board.getCharacterAt(i, j));
-            }
-            sb.append("\n");
-        }
-        return sb.toString();
+        return this.board.toString();
     }
 }

@@ -17,7 +17,7 @@ public enum GameCharacters {
     /**
      * Empty character.
      */
-    EMPTY('0');
+    EMPTY('O');
 
     /**
      * The character representing the game character.

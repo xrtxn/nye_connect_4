@@ -68,7 +68,7 @@ public final class Saver {
         sb.append(agame.getRows()).append(",")
                 .append(agame.getColumns())
                 .append(",")
-                .append(agame.getNextPlayer())
+                .append(agame.getCurrentPlayer())
                 .append("\n");
         for (int i = 0; i < agame.getRows(); i++) {
             for (int j = 0; j < agame.getColumns(); j++) {
@@ -99,8 +99,8 @@ public final class Saver {
         Board board = new Board(rowNum, columnNum);
         for (int i = 0; i < rowNum; i++) {
             for (int j = 0; j < columnNum; j++) {
-                board.setCharacterAt(i, j, GameCharacters
-                        .fromChar(secondPart[i].charAt(j)));
+                board.setCharacterAt(i, j,
+                        GameCharacters.fromChar(secondPart[i].charAt(j)));
             }
         }
 
