@@ -28,7 +28,7 @@ public final class Saver {
             BufferedReader reader =
                     new BufferedReader(
                             new FileReader(
-                                    "src/main/resources/input.txt"));
+                                    "src/main/resources/save.txt"));
             while ((line = reader.readLine()) != null) {
                 sb.append(line).append("\n");
             }
@@ -43,12 +43,12 @@ public final class Saver {
      *
      * @param agame the Game object to write to the text file
      */
-    public static void writeToTxt(final Game agame) {
-        BufferedWriter writer = null;
+    public static void saveToTxt(final Game agame) {
+        BufferedWriter writer;
         try {
             writer = new BufferedWriter(
                     new FileWriter(
-                            "src/main/resources/output.txt"));
+                            "src/main/resources/save.txt"));
             writer.write(toWriter(agame));
             writer.close();
         } catch (IOException e) {

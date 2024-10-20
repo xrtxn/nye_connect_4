@@ -12,7 +12,7 @@ public enum GameCharacters {
     /**
      * Player 2 character.
      */
-    PLAYER2('R'),
+    ROBOT('R'),
 
     /**
      * Empty character.

@@ -1,5 +1,6 @@
 package hu.nye;
 
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public final class Game {
@@ -27,6 +28,8 @@ public final class Game {
      * The current state of the game.
      */
     private GameState state;
+
+    private String playerName;
 
     private static final int ROBOT_SLEEP_TIME = 500;
 
@@ -69,6 +72,7 @@ public final class Game {
 
     public void userInput() {
         System.out.println("Enter the column number: ");
+
         Scanner scanner = new Scanner(System.in);
         int column = scanner.nextInt();
         if (column < 0 || column >= columns) {
@@ -99,9 +103,9 @@ public final class Game {
                             || checkVertical(i, j, character)
                             || checkDiagonal(i, j, character)) {
                         if (character == GameCharacters.PLAYER1) {
-                            setState(GameState.PLAYER1_WON);
+                            setState(GameState.PLAYER_WON);
                         } else {
-                            setState(GameState.PLAYER2_WON);
+                            setState(GameState.ROBOT_WON);
                         }
                         return;
                     }
@@ -154,33 +158,83 @@ public final class Game {
     public void startNew() {
         Scanner sc = new Scanner(System.in);
         System.out.print("Please enter the player name: ");
-        String playerName = sc.nextLine();
+        playerName = sc.nextLine();
         System.out.println(playerName + " vs. Robot");
         System.out.println(playerName + " starts the game");
         setState(GameState.PLAYING);
+
+        HighScore highScore = new HighScore();
+        try {
+            highScore.createTables();
+            highScore.insertUser(getPlayerName());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        while (getState() == GameState.PLAYING) {
+            getGameInput();
+            //not actually next player
+            checkIfWinner(getNextPlayer());
+            if (getBoard().isBoardFull()) {
+                setState(GameState.DRAW);
+            }
+            System.out.println(this);
+        }
+        if (getState() == GameState.PLAYER_WON) {
+            try {
+                highScore.increaseHighScore(getPlayerName());
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        System.out.println(GameState.description(getState()));
     }
 
     public void getGameInput() {
         if (getCurrentPlayer() == GameCharacters.PLAYER1) {
             boolean validInput = false;
             Scanner sc = new Scanner(System.in);
-            System.out.print("Please enter the column number: ");
-            int selectedColumn;
+
+            boolean isNum = false;
+            int selectedColumn = Integer.MAX_VALUE;
             do {
-                selectedColumn = sc.nextInt();
-                if (selectedColumn < 1 || selectedColumn >= columns + 1) {
-                    System.out.print("Invalid column number."
-                            + " Please enter a number between 1 and "
-                            + (columns) + ": ");
-                } else {
-                    if (getBoard().pushToBoard(selectedColumn, GameCharacters.PLAYER1)) {
-                        validInput = true;
-                    } else {
-                        System.out.println("Column is full."
-                                + " Please choose another column.");
+                System.out.println("Please enter the column number");
+                System.out.println("Or press 's' to save the game.");
+                System.out.println("Or press 'q' to quit the game.");
+                System.out.print("Input: ");
+                String input = sc.nextLine();
+                try {
+                    selectedColumn = Integer.parseInt(input);
+                    isNum = true;
+                } catch (NumberFormatException e) {
+                    switch (input) {
+                        case "s" -> {
+                            Saver.saveToTxt(this);
+                            System.out.println("Game saved.");
+                            continue;
+                        }
+                        case "q" -> {
+                            System.out.println("Quitting the game...");
+                            System.exit(0);
+                        }
                     }
                 }
-            } while (!validInput);
+                if (isNum) {
+                    if (selectedColumn < 1 || selectedColumn >= columns + 1) {
+                        System.out.print("Invalid column number."
+                                + " Please enter a number between 1 and "
+                                + (columns) + ": ");
+                    } else {
+                        if (getBoard().pushToBoard(selectedColumn, GameCharacters.PLAYER1)) {
+                            validInput = true;
+                        } else {
+                            System.out.println("Column is full."
+                                    + " Please choose another column.");
+                        }
+                    }
+                }
+
+            }
+            while (!validInput);
 
             switchPlayer();
         } else {
@@ -203,7 +257,7 @@ public final class Game {
         while (this.board.isColumnFull(column)) {
             column = (int) (Math.random() * App.COLUMNS) + 1;
         }
-        this.board.pushToBoard(column, GameCharacters.PLAYER2);
+        this.board.pushToBoard(column, GameCharacters.ROBOT);
         return column;
     }
 
@@ -263,7 +317,7 @@ public final class Game {
 
     public GameCharacters getNextPlayer() {
         if (currentPlayer == GameCharacters.PLAYER1) {
-            return GameCharacters.PLAYER2;
+            return GameCharacters.ROBOT;
         } else {
             return GameCharacters.PLAYER1;
         }
@@ -274,7 +328,7 @@ public final class Game {
      */
     public void switchPlayer() {
         if (currentPlayer == GameCharacters.PLAYER1) {
-            currentPlayer = GameCharacters.PLAYER2;
+            currentPlayer = GameCharacters.ROBOT;
         } else {
             currentPlayer = GameCharacters.PLAYER1;
         }
@@ -297,6 +351,15 @@ public final class Game {
     public void setBoard(final Board aboard) {
         this.board = aboard;
     }
+
+    public String getPlayerName() {
+        return playerName;
+    }
+
+    public void setPlayerName(String playerName) {
+        this.playerName = playerName;
+    }
+
 
     /**
      * Returns a string representation of the game board.

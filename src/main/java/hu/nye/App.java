@@ -23,25 +23,7 @@ public final class App {
      * @param args the command line arguments
      */
     public static void main(final String[] args) {
-        Game game = new Game(ROWS, COLUMNS);
-        game.startNew();
-        while (game.getState() == GameState.PLAYING) {
-            game.getGameInput();
-            //not actually next player
-            game.checkIfWinner(game.getNextPlayer());
-            if (game.getBoard().isBoardFull()) {
-                game.setState(GameState.DRAW);
-            }
-            System.out.println(game);
-        }
-        System.out.println(GameState.description(game.getState()));
-
-
-        Game readGame = Saver.readFromTxt();
-        System.out.println(readGame);
-        readGame.getBoard().pushToBoard(1, GameCharacters.PLAYER1);
-        readGame.getBoard().pushToBoard(5, GameCharacters.PLAYER1);
-        System.out.println(readGame);
-//        Saver.writeToTxt(readGame);
+        Menu menu = new Menu();
+        menu.printMenu();
     }
 }

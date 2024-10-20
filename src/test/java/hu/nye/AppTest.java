@@ -21,7 +21,7 @@ class AppTest {
         Assertions.assertEquals(game.getBoard().getCharacterAt(bottomRow, 0), GameCharacters.EMPTY);
         game.getBoard().pushToBoard(1, GameCharacters.PLAYER1);
         Assertions.assertEquals(GameCharacters.PLAYER1, game.getBoard().getZeroBasedCharacterAt(bottomRow, 1));
-        game.getBoard().pushToBoard(6, GameCharacters.PLAYER2);
-        Assertions.assertEquals(GameCharacters.PLAYER2, game.getBoard().getZeroBasedCharacterAt(bottomRow, 6));
+        game.getBoard().pushToBoard(6, GameCharacters.ROBOT);
+        Assertions.assertEquals(GameCharacters.ROBOT, game.getBoard().getZeroBasedCharacterAt(bottomRow, 6));
     }
 }

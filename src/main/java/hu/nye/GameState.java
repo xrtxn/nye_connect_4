@@ -22,12 +22,12 @@ public enum GameState {
     /**
      * Player 1 has won the game.
      */
-    PLAYER1_WON,
+    PLAYER_WON,
 
     /**
      * Player 2 has won the game.
      */
-    PLAYER2_WON;
+    ROBOT_WON;
 
     /**
      * Returns a description of the given game state.
@@ -47,11 +47,11 @@ public enum GameState {
             case DRAW -> {
                 return "The game ended in a draw.";
             }
-            case PLAYER1_WON -> {
-                return "Player 1 has won the game.";
+            case PLAYER_WON -> {
+                return "The player has won the game.";
             }
-            case PLAYER2_WON -> {
-                return "Player 2 has won the game.";
+            case ROBOT_WON -> {
+                return "The robot has won the game.";
             }
             default -> throw new IllegalStateException("Unexpected value: "
                     + state);
