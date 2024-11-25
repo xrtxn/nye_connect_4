@@ -6,23 +6,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-/**
- * Manages the high scores for the Connect 4 game.
- */
+
 public final class HighScore {
-    /**
-     * The database connection.
-     */
-    Connection connection;
-
-    /**
-     * The maximum number of high scores to display.
-     */
+    
     private static final int HIGHSCORE_LIST = 5;
+    
+    private Connection connection;
 
-    /**
-     * Constructs a new HighScore instance and establishes a database connection.
-     */
+    
     public HighScore() {
         try {
             this.connection = newConnection();
@@ -31,12 +22,7 @@ public final class HighScore {
         }
     }
 
-    /**
-     * Establishes a new database connection.
-     *
-     * @return the new database connection
-     * @throws SQLException if a database access error occurs
-     */
+    
     public static Connection newConnection() throws SQLException {
         // loads driver
         try {
@@ -53,11 +39,7 @@ public final class HighScore {
         return conn;
     }
 
-    /**
-     * Creates the necessary tables for storing users and high scores if they do not exist.
-     *
-     * @throws SQLException if a database access error occurs
-     */
+    
     public void createTables() throws SQLException {
         connection.createStatement().execute("CREATE TABLE IF NOT EXISTS "
                 + "users (id INT AUTO_INCREMENT PRIMARY KEY, "
@@ -71,12 +53,7 @@ public final class HighScore {
                 + " FOREIGN KEY (nameId) REFERENCES users(id))");
     }
 
-    /**
-     * Inserts a new user into the database if they do not already exist.
-     *
-     * @param name the name of the user
-     * @throws SQLException if a database access error occurs
-     */
+    
     public void insertUser(final String name) throws SQLException {
         Statement stmt = connection.createStatement();
         stmt.execute("SELECT * FROM users WHERE name = '" + name + "'");
@@ -88,12 +65,7 @@ public final class HighScore {
         }
     }
 
-    /**
-     * Increases the high score of the specified user by one.
-     *
-     * @param name the name of the user
-     * @throws SQLException if a database access error occurs
-     */
+    
     public void increaseHighScore(final String name) throws SQLException {
         Statement stmt = connection.createStatement();
         // get the user's score
@@ -118,11 +90,7 @@ public final class HighScore {
         }
     }
 
-    /**
-     * Displays the top high scores.
-     *
-     * @throws SQLException if a database access error occurs
-     */
+    
     public void showHighScore() throws SQLException {
         Statement stmt = connection.createStatement();
         stmt.execute("SELECT * FROM highscore "

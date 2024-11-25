@@ -1,41 +1,23 @@
 package hu.nye;
 
-/**
- * Enum representing the different states of the game.
- */
+
 public enum GameState {
-    /**
-     * The game is in setup state.
-     */
+    
     SETUP,
 
-    /**
-     * The game is currently being played.
-     */
+    
     PLAYING,
 
-    /**
-     * The game ended in a draw.
-     */
+    
     DRAW,
 
-    /**
-     * Player 1 has won the game.
-     */
+    
     PLAYER_WON,
 
-    /**
-     * Player 2 has won the game.
-     */
+    
     ROBOT_WON;
 
-    /**
-     * Returns a description of the given game state.
-     *
-     * @param state the game state to describe
-     * @return a string description of the game state
-     * @throws IllegalStateException if the game state is unexpected
-     */
+    
     public static String description(final GameState state) {
         switch (state) {
             case SETUP -> {

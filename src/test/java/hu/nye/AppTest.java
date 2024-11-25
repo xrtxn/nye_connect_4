@@ -18,7 +18,7 @@ class AppTest {
         final int COLUMNS = 6;
         final int bottomRow = ROWS - 1;
         Game game = new Game(ROWS, COLUMNS);
-        Assertions.assertEquals(game.getBoard().getCharacterAt(bottomRow, 0), GameCharacters.EMPTY);
+        Assertions.assertEquals(GameCharacters.EMPTY, game.getBoard().getCharacterAt(bottomRow, 0));
         game.getBoard().pushToBoard(1, GameCharacters.PLAYER1);
         Assertions.assertEquals(GameCharacters.PLAYER1, game.getBoard().getZeroBasedCharacterAt(bottomRow, 1));
         game.getBoard().pushToBoard(6, GameCharacters.ROBOT);

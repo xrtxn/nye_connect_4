@@ -1,48 +1,34 @@
 package hu.nye;
 
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.sql.SQLException;
 import java.util.Scanner;
 
+@XmlRootElement
 public final class Game {
-    /**
-     * The number of rows in the game board.
-     */
-    private final int rows;
-
-    /**
-     * The number of columns in the game board.
-     */
-    private final int columns;
-
-    /**
-     * The game board instance.
-     */
+    
+    private static final int ROBOT_SLEEP_TIME = 500;
+    
+    private static final int WINNING_CONDITION = 4;
+    
+    private int rows;
+    
+    private int columns;
+    
     private Board board;
-
-    /**
-     * The character representing the next player to move.
-     */
+    
     private GameCharacters currentPlayer;
-
-    /**
-     * The current state of the game.
-     */
+    
     private GameState state;
-
+    
     private String playerName;
 
-    private static final int ROBOT_SLEEP_TIME = 500;
+    public Game() {
+    }
 
-    private static final int WINNING_CONDITION = 4;
-
-    /**
-     * Constructs a new Game instance with the specified parameters.
-     *
-     * @param arows       the number of rows in the game board
-     * @param acolumns    the number of columns in the game board
-     * @param aboard      the game board instance
-     * @param anextPlayer the character representing the next player to move
-     */
+    
     public Game(final int arows,
                 final int acolumns,
                 final Board aboard,
@@ -54,14 +40,7 @@ public final class Game {
         this.state = GameState.SETUP;
     }
 
-    /**
-     * Constructs a new Game instance with the specified number of rows and
-     * columns.
-     * Initializes the game board and sets the initial state and next player.
-     *
-     * @param arows    the number of rows in the game board
-     * @param acolumns the number of columns in the game board
-     */
+    
     public Game(final int arows, final int acolumns) {
         this.rows = arows;
         this.columns = acolumns;
@@ -70,31 +49,7 @@ public final class Game {
         this.state = GameState.SETUP;
     }
 
-    public void userInput() {
-        System.out.println("Enter the column number: ");
-
-        Scanner scanner = new Scanner(System.in);
-        int column = scanner.nextInt();
-        if (column < 0 || column >= columns) {
-            System.out.println("Invalid column number."
-                    + " Please enter a number between 0 and " + (columns - 1));
-            return;
-        }
-        if (board.pushToBoard(column, currentPlayer)) {
-            switchPlayer();
-        } else {
-            System.out.println("Column is full. Please choose another column.");
-        }
-    }
-
-    /**
-     * Checks if the given character has won the game.
-     * This method should be implemented to check the current state
-     * of the board and determine if the specified character has
-     * achieved a winning condition.
-     *
-     * @param character the character to check for a winning condition
-     */
+    
     public void checkIfWinner(final GameCharacters character) {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
@@ -114,31 +69,43 @@ public final class Game {
         }
     }
 
-    public boolean checkHorizontal(final int row, final int column, final GameCharacters character) {
+    
+    public boolean checkHorizontal(final int row,
+                                   final int column,
+                                   final GameCharacters character) {
         int count = 0;
         for (int i = 0; i < WINNING_CONDITION; i++) {
-            if (column + i < columns && board.getCharacterAt(row, column + i) == character) {
+            if (column + i < columns && board.
+                    getCharacterAt(row, column + i) == character) {
                 count++;
             }
         }
         return count == WINNING_CONDITION;
     }
 
-    public boolean checkVertical(final int row, final int column, final GameCharacters character) {
+    
+    public boolean checkVertical(final int row,
+                                 final int column,
+                                 final GameCharacters character) {
         int count = 0;
         for (int i = 0; i < WINNING_CONDITION; i++) {
-            if (row + i < rows && board.getCharacterAt(row + i, column) == character) {
+            if (row + i < rows && board.
+                    getCharacterAt(row + i, column) == character) {
                 count++;
             }
         }
         return count == WINNING_CONDITION;
     }
 
-    public boolean checkDiagonal(final int row, final int column, final GameCharacters character) {
+    
+    public boolean checkDiagonal(final int row,
+                                 final int column,
+                                 final GameCharacters character) {
         int count = 0;
         for (int i = 0; i < WINNING_CONDITION; i++) {
             if (row + i < rows && column + i < columns
-                    && board.getCharacterAt(row + i, column + i) == character) {
+                    && board.getCharacterAt(row + i,
+                    column + i) == character) {
                 count++;
             }
         }
@@ -148,13 +115,15 @@ public final class Game {
         count = 0;
         for (int i = 0; i < WINNING_CONDITION; i++) {
             if (row + i < rows && column - i >= 0
-                    && board.getCharacterAt(row + i, column - i) == character) {
+                    && board.getCharacterAt(row + i,
+                    column - i) == character) {
                 count++;
             }
         }
         return count == WINNING_CONDITION;
     }
 
+    
     public void startNew() {
         Scanner sc = new Scanner(System.in);
         System.out.print("Please enter the player name: ");
@@ -172,7 +141,7 @@ public final class Game {
         }
         while (getState() == GameState.PLAYING) {
             getGameInput();
-            //not actually next player
+            // not actually next player
             checkIfWinner(getNextPlayer());
             if (getBoard().isBoardFull()) {
                 setState(GameState.DRAW);
@@ -189,6 +158,7 @@ public final class Game {
         System.out.println(GameState.description(getState()));
     }
 
+    
     public void getGameInput() {
         if (getCurrentPlayer() == GameCharacters.PLAYER1) {
             boolean validInput = false;
@@ -208,13 +178,22 @@ public final class Game {
                 } catch (NumberFormatException e) {
                     switch (input) {
                         case "s" -> {
-                            Saver.saveToTxt(this);
+                            try {
+                                GameXmlHandler.saveToXml(this, GameXmlHandler.SAVE_FILE);
+                            } catch (JAXBException ex) {
+                                throw new RuntimeException(ex);
+                            }
                             System.out.println("Game saved.");
                             continue;
                         }
                         case "q" -> {
                             System.out.println("Quitting the game...");
                             System.exit(0);
+                        }
+                        default -> {
+                            System.out.println("Invalid input."
+                                    + " Please try again.");
+                            continue;
                         }
                     }
                 }
@@ -224,7 +203,8 @@ public final class Game {
                                 + " Please enter a number between 1 and "
                                 + (columns) + ": ");
                     } else {
-                        if (getBoard().pushToBoard(selectedColumn, GameCharacters.PLAYER1)) {
+                        if (getBoard().pushToBoard(selectedColumn,
+                                GameCharacters.PLAYER1)) {
                             validInput = true;
                         } else {
                             System.out.println("Column is full."
@@ -232,10 +212,8 @@ public final class Game {
                         }
                     }
                 }
-
             }
             while (!validInput);
-
             switchPlayer();
         } else {
             System.out.println("The robot is thinking...");
@@ -252,6 +230,7 @@ public final class Game {
         }
     }
 
+    
     public int botMove() {
         int column = (int) (Math.random() * App.COLUMNS) + 1;
         while (this.board.isColumnFull(column)) {
@@ -261,60 +240,41 @@ public final class Game {
         return column;
     }
 
-    /**
-     * Gets the current state of the game.
-     *
-     * @return the current game state
-     */
+    
+    @XmlElement
     public GameState getState() {
         return state;
     }
 
-    /**
-     * Sets the current state of the game.
-     *
-     * @param astate the new game state
-     */
+    
     public void setState(final GameState astate) {
         this.state = astate;
     }
 
-    /**
-     * Gets the number of rows in the game board.
-     *
-     * @return the number of rows
-     */
+    
+    @XmlElement
     public int getRows() {
         return rows;
     }
 
-    /**
-     * Gets the number of columns in the game board.
-     *
-     * @return the number of columns
-     */
+    
+    @XmlElement
     public int getColumns() {
         return columns;
     }
 
-    /**
-     * Gets the character representing the next player to move.
-     *
-     * @return the next player character
-     */
+    
+    @XmlElement
     public GameCharacters getCurrentPlayer() {
         return currentPlayer;
     }
 
-    /**
-     * Sets the character representing the next player to move.
-     *
-     * @param anextPlayer the new next player character
-     */
+    
     public void setCurrentPlayer(final GameCharacters anextPlayer) {
         this.currentPlayer = anextPlayer;
     }
 
+    
     public GameCharacters getNextPlayer() {
         if (currentPlayer == GameCharacters.PLAYER1) {
             return GameCharacters.ROBOT;
@@ -323,9 +283,7 @@ public final class Game {
         }
     }
 
-    /**
-     * Switches the current player to the other player.
-     */
+    
     public void switchPlayer() {
         if (currentPlayer == GameCharacters.PLAYER1) {
             currentPlayer = GameCharacters.ROBOT;
@@ -334,38 +292,36 @@ public final class Game {
         }
     }
 
-    /**
-     * Gets the game board instance.
-     *
-     * @return the game board
-     */
+    
+    @XmlElement
     public Board getBoard() {
         return board;
     }
 
-    /**
-     * Sets the game board instance.
-     *
-     * @param aboard the new game board
-     */
+    
     public void setBoard(final Board aboard) {
         this.board = aboard;
     }
 
+    
     public String getPlayerName() {
         return playerName;
     }
 
-    public void setPlayerName(String playerName) {
-        this.playerName = playerName;
+    
+    public void setPlayerName(final String aplayerName) {
+        this.playerName = aplayerName;
     }
 
+    public void setRows(final int rows) {
+        this.rows = rows;
+    }
 
-    /**
-     * Returns a string representation of the game board.
-     *
-     * @return the string representation of the game board
-     */
+    public void setColumns(final int columns) {
+        this.columns = columns;
+    }
+
+    
     @Override
     public String toString() {
         return this.board.toString();

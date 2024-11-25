@@ -1,18 +1,20 @@
 package hu.nye;
 
+import javax.xml.bind.JAXBException;
 import java.sql.SQLException;
 import java.util.Scanner;
 
+
 public final class Menu {
-    /**
-     * The current action of the menu.
-     */
+    
     private MenuAction menuAction;
 
+    
     public Menu() {
         this.menuAction = MenuAction.MAIN_MENU;
     }
 
+    
     public void printMenu() {
         while (menuAction != MenuAction.QUIT) {
             System.out.println("Main menu");
@@ -20,6 +22,7 @@ public final class Menu {
             System.out.println("2. Load game");
             System.out.println("3. Show highscores");
             System.out.println("4. Quit");
+            System.out.print("Input: ");
 
             Scanner scanner = new Scanner(System.in);
             Integer choice = null;
@@ -48,6 +51,7 @@ public final class Menu {
         }
     }
 
+    
     public void action() {
         switch (menuAction) {
             case MAIN_MENU -> printMenu();
@@ -58,7 +62,12 @@ public final class Menu {
             }
             case LOAD_GAME -> {
                 System.out.println("Loading a game...");
-                Game readGame = Saver.readFromTxt();
+                Game readGame;
+                try {
+                    readGame = GameXmlHandler.loadFromXml(GameXmlHandler.SAVE_FILE);
+                } catch (JAXBException e) {
+                    throw new RuntimeException(e);
+                }
                 readGame.startNew();
             }
             case SHOW_HIGHSCORES -> {

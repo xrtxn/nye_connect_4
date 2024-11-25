@@ -6,12 +6,21 @@
     <suppressErrors>true</suppressErrors>
     <option name="thirdPartyClasspath" />
     <option name="activeLocationIds">
-      <option value="bundled-sun-checks" />
+      <option value="6b2b6cc5-53c8-4492-8d6a-85ae02711d84" />
     </option>
     <option name="locations">
       <list>
         <ConfigurationLocation id="bundled-sun-checks" type="BUNDLED" scope="All" description="Sun Checks">(bundled)</ConfigurationLocation>
         <ConfigurationLocation id="bundled-google-checks" type="BUNDLED" scope="All" description="Google Checks">(bundled)</ConfigurationLocation>
+        <ConfigurationLocation id="6b2b6cc5-53c8-4492-8d6a-85ae02711d84" type="LOCAL_FILE" scope="All" description="Sun changed">
+          $PROJECT_DIR$/checkstyle.xml
+          <option name="properties">
+            <map>
+              <entry key="org.checkstyle.sun.suppressionfilter.config" value="checkstyle-suppressions.xml" />
+              <entry key="org.checkstyle.sun.suppressionxpathfilter.config" value="checkstyle-xpath-suppressions.xml" />
+            </map>
+          </option>
+        </ConfigurationLocation>
       </list>
     </option>
   </component>
