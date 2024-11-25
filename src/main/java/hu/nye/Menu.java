@@ -6,15 +6,15 @@ import java.util.Scanner;
 
 
 public final class Menu {
-    
+
     private MenuAction menuAction;
 
-    
+
     public Menu() {
         this.menuAction = MenuAction.MAIN_MENU;
     }
 
-    
+
     public void printMenu() {
         while (menuAction != MenuAction.QUIT) {
             System.out.println("Main menu");
@@ -51,7 +51,7 @@ public final class Menu {
         }
     }
 
-    
+
     public void action() {
         switch (menuAction) {
             case MAIN_MENU -> printMenu();

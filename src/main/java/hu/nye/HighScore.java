@@ -8,12 +8,12 @@ import java.sql.Statement;
 
 
 public final class HighScore {
-    
+
     private static final int HIGHSCORE_LIST = 5;
-    
+
     private Connection connection;
 
-    
+
     public HighScore() {
         try {
             this.connection = newConnection();
@@ -22,7 +22,7 @@ public final class HighScore {
         }
     }
 
-    
+
     public static Connection newConnection() throws SQLException {
         // loads driver
         try {
@@ -39,7 +39,7 @@ public final class HighScore {
         return conn;
     }
 
-    
+
     public void createTables() throws SQLException {
         connection.createStatement().execute("CREATE TABLE IF NOT EXISTS "
                 + "users (id INT AUTO_INCREMENT PRIMARY KEY, "
@@ -53,7 +53,7 @@ public final class HighScore {
                 + " FOREIGN KEY (nameId) REFERENCES users(id))");
     }
 
-    
+
     public void insertUser(final String name) throws SQLException {
         Statement stmt = connection.createStatement();
         stmt.execute("SELECT * FROM users WHERE name = '" + name + "'");
@@ -65,7 +65,7 @@ public final class HighScore {
         }
     }
 
-    
+
     public void increaseHighScore(final String name) throws SQLException {
         Statement stmt = connection.createStatement();
         // get the user's score
@@ -90,7 +90,7 @@ public final class HighScore {
         }
     }
 
-    
+
     public void showHighScore() throws SQLException {
         Statement stmt = connection.createStatement();
         stmt.execute("SELECT * FROM highscore "

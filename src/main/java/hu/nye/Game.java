@@ -8,27 +8,27 @@ import java.util.Scanner;
 
 @XmlRootElement
 public final class Game {
-    
+
     private static final int ROBOT_SLEEP_TIME = 500;
-    
+
     private static final int WINNING_CONDITION = 4;
-    
+
     private int rows;
-    
+
     private int columns;
-    
+
     private Board board;
-    
+
     private GameCharacters currentPlayer;
-    
+
     private GameState state;
-    
+
     private String playerName;
 
     public Game() {
     }
 
-    
+
     public Game(final int arows,
                 final int acolumns,
                 final Board aboard,
@@ -40,7 +40,7 @@ public final class Game {
         this.state = GameState.SETUP;
     }
 
-    
+
     public Game(final int arows, final int acolumns) {
         this.rows = arows;
         this.columns = acolumns;
@@ -49,7 +49,7 @@ public final class Game {
         this.state = GameState.SETUP;
     }
 
-    
+
     public void checkIfWinner(final GameCharacters character) {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
@@ -69,7 +69,7 @@ public final class Game {
         }
     }
 
-    
+
     public boolean checkHorizontal(final int row,
                                    final int column,
                                    final GameCharacters character) {
@@ -83,7 +83,7 @@ public final class Game {
         return count == WINNING_CONDITION;
     }
 
-    
+
     public boolean checkVertical(final int row,
                                  final int column,
                                  final GameCharacters character) {
@@ -97,7 +97,7 @@ public final class Game {
         return count == WINNING_CONDITION;
     }
 
-    
+
     public boolean checkDiagonal(final int row,
                                  final int column,
                                  final GameCharacters character) {
@@ -123,7 +123,7 @@ public final class Game {
         return count == WINNING_CONDITION;
     }
 
-    
+
     public void startNew() {
         Scanner sc = new Scanner(System.in);
         System.out.print("Please enter the player name: ");
@@ -158,7 +158,7 @@ public final class Game {
         System.out.println(GameState.description(getState()));
     }
 
-    
+
     public void getGameInput() {
         if (getCurrentPlayer() == GameCharacters.PLAYER1) {
             boolean validInput = false;
@@ -230,7 +230,7 @@ public final class Game {
         }
     }
 
-    
+
     public int botMove() {
         int column = (int) (Math.random() * App.COLUMNS) + 1;
         while (this.board.isColumnFull(column)) {
@@ -240,41 +240,41 @@ public final class Game {
         return column;
     }
 
-    
+
     @XmlElement
     public GameState getState() {
         return state;
     }
 
-    
+
     public void setState(final GameState astate) {
         this.state = astate;
     }
 
-    
+
     @XmlElement
     public int getRows() {
         return rows;
     }
 
-    
+
     @XmlElement
     public int getColumns() {
         return columns;
     }
 
-    
+
     @XmlElement
     public GameCharacters getCurrentPlayer() {
         return currentPlayer;
     }
 
-    
+
     public void setCurrentPlayer(final GameCharacters anextPlayer) {
         this.currentPlayer = anextPlayer;
     }
 
-    
+
     public GameCharacters getNextPlayer() {
         if (currentPlayer == GameCharacters.PLAYER1) {
             return GameCharacters.ROBOT;
@@ -283,7 +283,7 @@ public final class Game {
         }
     }
 
-    
+
     public void switchPlayer() {
         if (currentPlayer == GameCharacters.PLAYER1) {
             currentPlayer = GameCharacters.ROBOT;
@@ -292,36 +292,36 @@ public final class Game {
         }
     }
 
-    
+
     @XmlElement
     public Board getBoard() {
         return board;
     }
 
-    
+
     public void setBoard(final Board aboard) {
         this.board = aboard;
     }
 
-    
+
     public String getPlayerName() {
         return playerName;
     }
 
-    
+
     public void setPlayerName(final String aplayerName) {
         this.playerName = aplayerName;
     }
 
-    public void setRows(final int rows) {
-        this.rows = rows;
+    public void setRows(final int arows) {
+        this.rows = arows;
     }
 
-    public void setColumns(final int columns) {
-        this.columns = columns;
+    public void setColumns(final int acolumns) {
+        this.columns = acolumns;
     }
 
-    
+
     @Override
     public String toString() {
         return this.board.toString();
