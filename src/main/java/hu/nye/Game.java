@@ -37,6 +37,7 @@ public final class Game {
         this.state = GameState.SETUP;
     }
 
+    //generated with GitHub copilot
     public void checkIfWinner(final GameCharacters character) {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
@@ -93,6 +94,7 @@ public final class Game {
         }
         return count == WINNING_CONDITION;
     }
+    //generated end
 
     @GeneratedJacocoExcluded
     public void startNew() {
