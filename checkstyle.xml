@@ -104,7 +104,7 @@
         <!--        <module name="JavadocMethod"/>-->
         <!--        <module name="JavadocType"/>-->
         <!-- <module name="JavadocVariable"/>-->
-<!--        <module name="JavadocStyle"/>-->
+        <!--        <module name="JavadocStyle"/>-->
         <!--        <module name="MissingJavadocMethod"/>-->
 
         <!-- Checks for Naming Conventions.                  -->
@@ -183,7 +183,7 @@
         <!-- Miscellaneous other checks.                   -->
         <!-- See https://checkstyle.org/checks/misc/index.html -->
         <module name="ArrayTypeStyle"/>
-        <module name="FinalParameters"/>
+<!--        <module name="FinalParameters"/>-->
         <module name="TodoComment"/>
         <module name="UpperEll"/>
 

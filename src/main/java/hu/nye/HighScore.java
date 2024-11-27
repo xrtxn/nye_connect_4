@@ -6,13 +6,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-
 public final class HighScore {
 
     private static final int HIGHSCORE_LIST = 5;
 
     private Connection connection;
-
 
     public HighScore() {
         try {
@@ -22,6 +20,9 @@ public final class HighScore {
         }
     }
 
+    public void setConnection(Connection aconnection) {
+        this.connection = aconnection;
+    }
 
     public static Connection newConnection() throws SQLException {
         // loads driver
@@ -39,7 +40,6 @@ public final class HighScore {
         return conn;
     }
 
-
     public void createTables() throws SQLException {
         connection.createStatement().execute("CREATE TABLE IF NOT EXISTS "
                 + "users (id INT AUTO_INCREMENT PRIMARY KEY, "
@@ -53,7 +53,6 @@ public final class HighScore {
                 + " FOREIGN KEY (nameId) REFERENCES users(id))");
     }
 
-
     public void insertUser(final String name) throws SQLException {
         Statement stmt = connection.createStatement();
         stmt.execute("SELECT * FROM users WHERE name = '" + name + "'");
@@ -64,7 +63,6 @@ public final class HighScore {
                     + "VALUES ('" + name + "')");
         }
     }
-
 
     public void increaseHighScore(final String name) throws SQLException {
         Statement stmt = connection.createStatement();
@@ -89,7 +87,6 @@ public final class HighScore {
                     + "SELECT id, 1 FROM users WHERE name = '" + name + "'");
         }
     }
-
 
     public void showHighScore() throws SQLException {
         Statement stmt = connection.createStatement();

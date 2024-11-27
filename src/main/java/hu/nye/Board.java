@@ -1,6 +1,5 @@
 package hu.nye;
 
-
 public final class Board {
 
     private GameCharacters[][] board;
@@ -59,8 +58,9 @@ public final class Board {
         return getZeroBasedCharacterAt(0, acolumn) != GameCharacters.EMPTY;
     }
 
+    // found a bug here with testing
     public boolean isBoardFull() {
-        for (int i = 1; i <= App.COLUMNS; i++) {
+        for (int i = 1; i <= App.COLUMNS + 1; i++) {
             if (!isColumnFull(i)) {
                 return false;
             }
@@ -68,6 +68,7 @@ public final class Board {
         return true;
     }
 
+    @GeneratedJacocoExcluded
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

@@ -9,10 +9,8 @@ public final class App {
 
     static final int COLUMNS = 6;
 
-
     private App() {
     }
-
 
     public static void main(final String[] args) {
         Menu menu = new Menu();

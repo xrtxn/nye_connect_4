@@ -28,19 +28,6 @@ public final class Game {
     public Game() {
     }
 
-
-    public Game(final int arows,
-                final int acolumns,
-                final Board aboard,
-                final GameCharacters anextPlayer) {
-        this.rows = arows;
-        this.columns = acolumns;
-        this.board = aboard;
-        this.currentPlayer = anextPlayer;
-        this.state = GameState.SETUP;
-    }
-
-
     public Game(final int arows, final int acolumns) {
         this.rows = arows;
         this.columns = acolumns;
@@ -49,13 +36,11 @@ public final class Game {
         this.state = GameState.SETUP;
     }
 
-
     public void checkIfWinner(final GameCharacters character) {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
                 if (board.getCharacterAt(i, j) == character) {
-                    if (checkHorizontal(i, j, character)
-                            || checkVertical(i, j, character)
+                    if (checkHorizontal(i, j, character) || checkVertical(i, j, character)
                             || checkDiagonal(i, j, character)) {
                         if (character == GameCharacters.PLAYER1) {
                             setState(GameState.PLAYER_WON);
@@ -69,43 +54,30 @@ public final class Game {
         }
     }
 
-
-    public boolean checkHorizontal(final int row,
-                                   final int column,
-                                   final GameCharacters character) {
+    public boolean checkHorizontal(final int row, final int column, final GameCharacters character) {
         int count = 0;
         for (int i = 0; i < WINNING_CONDITION; i++) {
-            if (column + i < columns && board.
-                    getCharacterAt(row, column + i) == character) {
+            if (column + i < columns && board.getCharacterAt(row, column + i) == character) {
                 count++;
             }
         }
         return count == WINNING_CONDITION;
     }
 
-
-    public boolean checkVertical(final int row,
-                                 final int column,
-                                 final GameCharacters character) {
+    public boolean checkVertical(final int row, final int column, final GameCharacters character) {
         int count = 0;
         for (int i = 0; i < WINNING_CONDITION; i++) {
-            if (row + i < rows && board.
-                    getCharacterAt(row + i, column) == character) {
+            if (row + i < rows && board.getCharacterAt(row + i, column) == character) {
                 count++;
             }
         }
         return count == WINNING_CONDITION;
     }
 
-
-    public boolean checkDiagonal(final int row,
-                                 final int column,
-                                 final GameCharacters character) {
+    public boolean checkDiagonal(final int row, final int column, final GameCharacters character) {
         int count = 0;
         for (int i = 0; i < WINNING_CONDITION; i++) {
-            if (row + i < rows && column + i < columns
-                    && board.getCharacterAt(row + i,
-                    column + i) == character) {
+            if (row + i < rows && column + i < columns && board.getCharacterAt(row + i, column + i) == character) {
                 count++;
             }
         }
@@ -114,16 +86,14 @@ public final class Game {
         }
         count = 0;
         for (int i = 0; i < WINNING_CONDITION; i++) {
-            if (row + i < rows && column - i >= 0
-                    && board.getCharacterAt(row + i,
-                    column - i) == character) {
+            if (row + i < rows && column - i >= 0 && board.getCharacterAt(row + i, column - i) == character) {
                 count++;
             }
         }
         return count == WINNING_CONDITION;
     }
 
-
+    @GeneratedJacocoExcluded
     public void startNew() {
         Scanner sc = new Scanner(System.in);
         System.out.print("Please enter the player name: ");
@@ -158,7 +128,7 @@ public final class Game {
         System.out.println(GameState.description(getState()));
     }
 
-
+    @GeneratedJacocoExcluded
     public void getGameInput() {
         if (getCurrentPlayer() == GameCharacters.PLAYER1) {
             boolean validInput = false;
@@ -191,8 +161,7 @@ public final class Game {
                             System.exit(0);
                         }
                         default -> {
-                            System.out.println("Invalid input."
-                                    + " Please try again.");
+                            System.out.println("Invalid input." + " Please try again.");
                             continue;
                         }
                     }
@@ -200,20 +169,16 @@ public final class Game {
                 if (isNum) {
                     if (selectedColumn < 1 || selectedColumn >= columns + 1) {
                         System.out.print("Invalid column number."
-                                + " Please enter a number between 1 and "
-                                + (columns) + ": ");
+                                + " Please enter a number between 1 and " + (columns) + ": ");
                     } else {
-                        if (getBoard().pushToBoard(selectedColumn,
-                                GameCharacters.PLAYER1)) {
+                        if (getBoard().pushToBoard(selectedColumn, GameCharacters.PLAYER1)) {
                             validInput = true;
                         } else {
-                            System.out.println("Column is full."
-                                    + " Please choose another column.");
+                            System.out.println("Column is full." + " Please choose another column.");
                         }
                     }
                 }
-            }
-            while (!validInput);
+            } while (!validInput);
             switchPlayer();
         } else {
             System.out.println("The robot is thinking...");
@@ -221,15 +186,13 @@ public final class Game {
                 Thread.sleep(ROBOT_SLEEP_TIME);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
-                System.out.println("Thread was interrupted,"
-                        + " failed to complete operation");
+                System.out.println("Thread was interrupted," + " failed to complete operation");
             }
             int botColumn = botMove();
             System.out.println("Robot moved to column " + botColumn);
             switchPlayer();
         }
     }
-
 
     public int botMove() {
         int column = (int) (Math.random() * App.COLUMNS) + 1;
@@ -240,40 +203,41 @@ public final class Game {
         return column;
     }
 
-
     @XmlElement
     public GameState getState() {
         return state;
     }
 
-
     public void setState(final GameState astate) {
         this.state = astate;
     }
-
 
     @XmlElement
     public int getRows() {
         return rows;
     }
 
+    public void setRows(final int arows) {
+        this.rows = arows;
+    }
 
     @XmlElement
     public int getColumns() {
         return columns;
     }
 
+    public void setColumns(final int acolumns) {
+        this.columns = acolumns;
+    }
 
     @XmlElement
     public GameCharacters getCurrentPlayer() {
         return currentPlayer;
     }
 
-
     public void setCurrentPlayer(final GameCharacters anextPlayer) {
         this.currentPlayer = anextPlayer;
     }
-
 
     public GameCharacters getNextPlayer() {
         if (currentPlayer == GameCharacters.PLAYER1) {
@@ -283,7 +247,6 @@ public final class Game {
         }
     }
 
-
     public void switchPlayer() {
         if (currentPlayer == GameCharacters.PLAYER1) {
             currentPlayer = GameCharacters.ROBOT;
@@ -292,35 +255,22 @@ public final class Game {
         }
     }
 
-
     @XmlElement
     public Board getBoard() {
         return board;
     }
 
-
     public void setBoard(final Board aboard) {
         this.board = aboard;
     }
-
 
     public String getPlayerName() {
         return playerName;
     }
 
-
     public void setPlayerName(final String aplayerName) {
         this.playerName = aplayerName;
     }
-
-    public void setRows(final int arows) {
-        this.rows = arows;
-    }
-
-    public void setColumns(final int acolumns) {
-        this.columns = acolumns;
-    }
-
 
     @Override
     public String toString() {

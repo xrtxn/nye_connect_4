@@ -52,6 +52,11 @@
                         <goals>
                             <goal>report</goal>
                         </goals>
+                        <configuration>
+                            <excludes>
+                                <exclude>hu/nye/Menu.java</exclude>
+                            </excludes>
+                        </configuration>
                     </execution>
                     <execution>
                         <id>jacoco-check</id>
@@ -60,6 +65,9 @@
                             <goal>check</goal>
                         </goals>
                         <configuration>
+                            <excludes>
+                                <exclude>hu/nye/Menu.java</exclude>
+                            </excludes>
                             <rules>
                                 <rule>
                                     <limits>

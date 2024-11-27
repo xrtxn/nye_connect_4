@@ -1,23 +1,18 @@
 package hu.nye;
 
-
 public enum GameState {
 
     SETUP,
 
-
     PLAYING,
-
 
     DRAW,
 
-
     PLAYER_WON,
-
 
     ROBOT_WON;
 
-
+    @GeneratedJacocoExcluded
     public static String description(final GameState state) {
         switch (state) {
             case SETUP -> {

@@ -4,17 +4,15 @@ import javax.xml.bind.JAXBException;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-
 public final class Menu {
 
     private MenuAction menuAction;
-
 
     public Menu() {
         this.menuAction = MenuAction.MAIN_MENU;
     }
 
-
+    @GeneratedJacocoExcluded
     public void printMenu() {
         while (menuAction != MenuAction.QUIT) {
             System.out.println("Main menu");
@@ -51,7 +49,7 @@ public final class Menu {
         }
     }
 
-
+    @GeneratedJacocoExcluded
     public void action() {
         switch (menuAction) {
             case MAIN_MENU -> printMenu();

@@ -1,24 +1,18 @@
 package hu.nye;
 
-
 public enum GameCharacters {
 
     PLAYER1('Y'),
 
-
     ROBOT('R'),
-
 
     EMPTY('O');
 
-
     private final char gameCharacter;
-
 
     GameCharacters(final char agameCharacter) {
         this.gameCharacter = agameCharacter;
     }
-
 
     public static GameCharacters fromChar(final char agameCharacter) {
         for (GameCharacters gameCharacter : GameCharacters.values()) {
@@ -29,7 +23,6 @@ public enum GameCharacters {
         throw new IllegalArgumentException(
                 "No enum constant with agameCharacter " + agameCharacter);
     }
-
 
     @Override
     public String toString() {
