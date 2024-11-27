@@ -1,10 +1,10 @@
 package hu.nye;
 
+import jakarta.xml.bind.JAXBException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
 
-import javax.xml.bind.JAXBException;
 import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;

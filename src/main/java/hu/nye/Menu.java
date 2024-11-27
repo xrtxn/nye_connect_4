@@ -1,6 +1,7 @@
 package hu.nye;
 
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBException;
+
 import java.sql.SQLException;
 import java.util.Scanner;
 
